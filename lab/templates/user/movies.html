@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block aguulga %}
+
+<!-- ========================= SECTION PAGETOP ========================= -->
+<section class="section-pagetop bg">
+    <div class="container">
+        <h2 class="title-page">Кинонууд</h2>
+        
+    </div> <!-- container //  -->
+    </section>
+    <!-- ========================= SECTION INTRO END// ========================= -->
+    
+    <!-- ========================= SECTION CONTENT ========================= -->
+    <section class="section-content padding-y">
+    <div class="container">
+    
+    <div class="row">
+        <aside class="col-md-3">
+            
+    <div class="card">
+        <form method = "POST">
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+                    <i class="icon-control fa fa-chevron-down"></i>
+                    <h6 class="title">Киноны нэрээр хайх</h6>
+                </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_1">
+                <div class="card-body">
+                    <input class="form-control" type="text" name="txtMovieTitle" placeholder="Киноны нэр">
+                </div> <!-- card-body.// -->
+            </div>
+        </article> <!-- filter-group  .// -->
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+                    <i class="icon-control fa fa-chevron-down"></i>
+                    <h6 class="title">Кино нээлт хийсэн он </h6>
+                </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_3">
+                <div class="card-body">
+                    
+                    <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Эхлэх он</label>
+                      <!-- <input class="form-control" placeholder="$0" type="number"> -->
+                          <input class="form-control" type="number" min="0" name="minReleased">
+                    </div>
+                    <div class="form-group text-right col-md-6">
+                      <label>Дуусах он</label>
+                      <input class="form-control" type="number" min="0" max="9999" name="maxReleased">
+                    </div>
+                    </div> <!-- form-row.// -->
+                    <input type="submit" value="Хайх" class="btn btn-block btn-primary">
+                </div><!-- card-body.// -->
+            </div>
+        </article> <!-- filter-group .// -->
+        </form>
+    </div> <!-- card.// -->
+    
+        </aside> <!-- col.// -->
+        <main class="col-md-9">
+    
+    <header class="border-bottom mb-4 pb-3">
+            <div class="form-inline">
+                <span class="mr-md-auto"><b>{{too}}</b> Кино олдлоо </span>
+                
+            </div>
+    </header><!-- sect-heading -->
+    
+    <div class="row">
+        {% for u in utga %}
+        <div class="col-md-4">
+            <figure class="card card-product-grid">
+                <div class="img-wrap"> 
+                    <img src="{{u.image}}" alt="Энд киноны зураг байна">
+                    
+                </div> <!-- img-wrap.// -->
+                <figcaption class="info-wrap">
+                    <div class="fix-height">
+                        <a href="./product-detail.html" class="title">{{u.title}}</a>
+                        <div class="price-wrap mt-2">
+                            <span class="price">огноо: {{u.released}}</span>
+                        </div> <!-- price-wrap.// -->
+                    </div>
+                    <a href="{{url_for('movie', id=u.movieID)}}" class="btn btn-block btn-primary">Дэлгэрэнгүй </a>	
+                </figcaption>
+            </figure>
+        </div> <!-- col.// -->
+        {% endfor %}
+    </div> <!-- row end.// -->
+    
+    {% if paginate %}
+    {{paginate.links}}
+    {% endif %}
+    <!-- <nav class="mt-4" aria-label="Page navigation sample">
+      <ul class="pagination">
+        <li class="page-item disabled"><a class="page-link" href="#">Өмнөх</a></li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">Дараах</a></li>
+      </ul>
+    </nav> -->
+    
+        </main> <!-- col.// -->
+    
+    </div>
+    
+    </div> <!-- container .//  -->
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    
+
+{% endblock %}

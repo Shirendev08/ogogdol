@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Create</title>
+    <script>
+         function showSecondSelect() {
+            var selectedValue = document.getElementById("relationship").value;
+            var titleInput = document.getElementById("roles");
+
+            // Check if the selected relationship is "ACTED_IN"
+            if (selectedValue === "ACTED_IN") {
+                // Enable the title input
+                titleInput.disabled = false;
+            } else {
+                // Disable the title input
+                titleInput.disabled = true;
+            }
+        }
+        </script>
+</head>
+<body>
+    <p>{{resp}}</p>
+    {% if data %}
+    <form method="POST" enctype="multipart/form-data">
+        <!-- title, tagline, released, image -->
+        
+        <label for="cars">Choose movie:</label><br><br>
+        
+
+        <select name="title" id="title">
+            {% for u in data.movies %}
+          <option value="{{u.title}}">{{u.title}}</option>
+          {% endfor %}
+        </select><br><br>
+        <label for="cars">Choose Person:</label><br><br>
+
+        <select name="name" id="name">
+            {% for u in data.persons %}
+          <option value="{{u.name}}">{{u.name}}</option>
+          {% endfor %}
+        </select><br><br>
+        <label for="cars">Choose Relationship:</label><br><br>
+
+        <select name="relationship" id="relationship" onchange="showSecondSelect()">
+            {% for r in data.rel %}
+          <option value="{{r.relationship}}">{{r.relationship}}</option>
+          {% endfor %}
+        </select><br><br>
+        <input type="text" placeholder="roles" name="roles" id="roles"><br><br>
+        
+        
+        
+        <input type="submit" value="submit">
+    </form>
+    {% endif %}
+</body>
+
+
+</html>

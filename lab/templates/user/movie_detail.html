@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block aguulga %}
+
+<!-- movie detail aguulga ehlel -->
+
+<!-- ============================ COMPONENT 1 ================================= -->
+<div class="card">
+	<div class="row no-gutters">
+		<aside class="col-md-6">
+<article class="gallery-wrap"> 
+	<div class="img-big-wrap">
+        <!-- kinonii zurag bairlana -->
+	   <a href="#"><img width="100%" src="{{data.movie.image}}"></a>
+	</div> <!-- img-big-wrap.// -->
+	
+</article> <!-- gallery-wrap .end// -->
+		</aside>
+		<main class="col-md-6 border-left">
+<article class="content-body">
+
+<h2 class="title">{{data.movie.title}}</h2>
+
+<div class="mb-3"> 
+	<var class="price h4">{{data.movie.released}}</var> 
+</div> 
+<p>{{data.movie.tagline}}</p>
+<hr>
+<!-- actors -->
+	<div class="row">
+        <div class="col-md-4">
+		    <h6>Жүжигчид:</h6>
+        </div>
+        <div class="col-md-8">
+            {% if data.actors %}
+            <ul>
+                {% for actor in data.actors %}
+                <a href="{{url_for('actor', id=actor.actorID)}}"><li>{{actor.name}} {{actor.roles}}</li></a>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Жүжигчидийн мэдээлэл олдсонгүй</p>
+            {% endif %}
+        </div>     
+	</div> <!-- row.// -->
+    <hr>
+<!-- directors  -->
+<div class="row">
+    <div class="col-md-4">
+        <h6>Найруулагч:</h6>
+    </div>
+    <div class="col-md-8">
+        {% if data.directors %}
+        <ul>
+            {% for director in data.directors %}
+            <a href="{{url_for('actor', id=director.directorID)}}"><li>{{director.name}}</li></a>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Найруулагчийн мэдээлэл олдсонгүй</p>
+        {% endif %}
+    </div>     
+</div> <!-- row.// -->
+<hr>
+<!-- writers  -->
+<div class="row">
+    <div class="col-md-4">
+        <h6>Зохиолч:</h6>
+    </div>
+    <div class="col-md-8">
+        {% if data.writers %}
+        <ul>
+            {% for writer in data.writers %}
+            <a href="#"><li>{{ writer.name }}</li></a>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Зохиолчийн мэдээлэл олдсонгүй</p>
+        {% endif %}
+    </div>     
+</div> <!-- row.// -->
+<hr>
+<!-- producers  -->
+<div class="row">
+    <div class="col-md-4">
+        <h6>Продюсер:</h6>
+    </div>
+    <div class="col-md-8">
+        {% if data.producers %}
+        <ul>
+            {% for producer in data.producers %}
+            <a href="#"><li>{{producer.name}}</li></a>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Продюсерийн мэдээлэл олдсонгүй</p>
+        {% endif %}
+    </div>     
+</div> <!-- row.// -->
+<hr>
+</article> <!-- product-info-aside .// -->
+		</main> <!-- col.// -->
+        
+	</div> <!-- row.// -->
+</div> <!-- card.// -->
+<!-- ============================ COMPONENT 1 END .// ================================= -->
+{% if data.comments %}
+   {% for comment in data.comments %}
+   <p>
+    {{comment.name}}
+    {{comment.summary}} - {{comment.rating}}
+   </p>
+   
+   {% endfor %}
+{% endif %}
+
+<!-- movie detail aguulga togsgol -->
+
+{% endblock %}

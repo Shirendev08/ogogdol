@@ -1,0 +1,9 @@
+MATCH (m:Movie)
+SET m.image = '/static/movies/'+m.title+'.jpg'
+
+
+
+MATCH (m:Person)
+SET m.image = '/static/media/'+m.name+'.jpg'
+
+

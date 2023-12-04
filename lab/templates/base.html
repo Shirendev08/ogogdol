@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="max-age=604800" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>Movie app</title>
+
+<link href="../static/images/logo-section-4.svg" rel="shortcut icon" type="image/x-icon">
+
+<!-- jQuery -->
+<script src="../static/js/jquery-2.0.0.min.js" type="text/javascript"></script>
+
+<!-- Bootstrap4 files-->
+<script src="../static/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+<link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+
+<!-- Font awesome 5 -->
+<link href="../static/fonts/fontawesome/css/all.min.css" type="text/css" rel="stylesheet">
+
+<!-- custom style -->
+<link href="../static/css/ui.css" rel="stylesheet" type="text/css"/>
+<link href="../static/css/responsive.css" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+<!-- custom javascript -->
+<script src="js/script.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+}); 
+// jquery end
+</script>
+
+</head>
+<body>
+
+
+<header class="section-header">
+<section class="header-main border-bottom">
+	<div class="container">
+	<!-- <div class="col-lg col-sm col-md col-12 flex-grow-0"> -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+			<a class="navbar-brand" href="#"><img class="logo" src="../static/images/neo4j_logo_globe.png"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			  <div class="navbar-nav">
+				<a class="nav-item nav-link active" href="{{url_for('index')}}">Нүүр <span class="sr-only">(current)</span></a>
+				<a class="nav-item nav-link" href="{{url_for('movies')}}">Кино</a>
+				<a class="nav-item nav-link" href="{{url_for('actors')}}">Жүжигчид</a>
+				<a class="nav-item nav-link" href="{{url_for('directors')}}">Найруулагч</a>
+				<a class="nav-item nav-link" href="#">Зохиолч</a>
+				<a class="nav-item nav-link" href="#">Продюсер</a>
+				<a class="nav-item nav-link" href="#">Шүүмжлэгч</a>
+			  </div>
+			</div>
+		  </nav>
+	<!-- </div> col.// -->
+	</div> <!-- container.// -->
+</section> <!-- header-main .// -->
+
+
+
+</header> <!-- section-header.// -->
+
+<!-- aguugalga ehlel -->
+
+{% block aguulga %}
+
+{% endblock %}
+
+<!-- aguulga togsgol -->
+
+
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="section-footer border-top padding-y">
+	<div class="container">
+		<p class="float-md-left"> 
+			&copy 2022 Movie App using Neo4j and flask 
+		</p>
+	</div><!-- //container -->
+</footer>
+<!-- ========================= FOOTER END // ========================= -->
+
+
+
+</body>
+</html>

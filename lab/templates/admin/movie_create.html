@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Create</title>
+</head>
+<body>
+    <p>{{resp}}</p>
+    <form method="POST" enctype="multipart/form-data">
+        <!-- title, tagline, released, image -->
+        <input type="text" placeholder="title" name="title"><br><br>
+        <input type="text" placeholder="tagline" name="tagline"><br><br>
+        <input type="date" placeholder="released" name="released"><br><br>
+        <input type="file" name="img"><br><br>
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>
