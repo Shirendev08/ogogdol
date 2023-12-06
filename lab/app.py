@@ -10,6 +10,24 @@ MOVIE_IMG = os.path.join('static', 'movies')
 app.config['UPLOAD_FOLDER'] = MOVIE_IMG
 
 ### user start ###
+@app.context_processor
+def inject_data():
+    con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+    cur = con.session()
+    latest = cur.run('''
+                MATCH (p:Person)-[r]->(m:Movie)
+
+RETURN distinct
+  CASE
+    WHEN type(r) = "ACTED_IN" THEN "Жүжигчин"
+    WHEN type(r) = "DIRECTED" THEN "Найруулагч"
+    WHEN type(r) = "FOLLOWS" THEN "Дагагч"
+    WHEN type(r) = "PRODUCED" THEN "Продюсер"
+    WHEN type(r) = "WROTE" THEN "Зохиолч"
+    ELSE "Тоймч"
+  END AS turul
+''')
+    return {'neo4j_data': latest} 
 
 @app.route("/")
 def index():
@@ -40,42 +58,10 @@ def movies(limit=9):
         search_movie = list(cur.run('''
         MATCH (m:Movie)
         WHERE toLower(m.title) CONTAINS toLower($title)
-        AND ($minReleased IS NULL OR m.released >= $minReleased)
-        AND ($maxReleased IS NULL OR m.released <= $maxReleased)
         RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
 ''', title=mname,minReleased=min_released, maxReleased=max_released))
         too = len(search_movie)
         return render_template('user/movies.html', utga=search_movie, too=too)
-    
-@app.route("/actors", methods = ['GET', 'POST'])
-def actors(limit=9):
-    if request.method == 'GET':
-        page = int(request.args.get("page",1))
-        start = (page-1) * limit
-        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
-        cur = con.session()
-        actors = cur.run("match (p:Person)-[:ACTED_IN]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image")
-        latest = list(actors)
-        too = len(latest)
-        paginate = Pagination(page=page, per_page=limit, total=too)
-        paged_actors = cur.run("match (p:Person)-[:ACTED_IN]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as actorID SKIP $skip LIMIT $limit", skip=start, limit=limit)
-        return render_template('user/actors.html', utga=paged_actors, too=too, paginate=paginate)
-    elif request.method == 'POST':
-        title = request.form['txtMovieTitle']
-        print(title)
-        min_released = request.form.get('minReleased')
-        max_released = request.form.get('maxReleased')
-        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
-        cur = con.session()
-        search_movie = list(cur.run('''
-        MATCH (m:Movie)
-    WHERE toLower(m.title) CONTAINS toLower($title)
-    AND ($minReleased IS NULL AND $maxReleased IS NULL OR (m.released >= $minReleased AND m.released <= $maxReleased))
-    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
-''', title=title,minReleased=min_released, maxReleased=max_released))
-        too = len(search_movie)
-        return render_template('user/actors.html', utga=search_movie, too=too)
-
 @app.route('/movie/<int:id>')
 def movie(id):
     conn = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
@@ -118,7 +104,39 @@ def movie(id):
     
     return render_template('user/movie_detail.html', data = context)
     
-@app.route('/actor/<int:id>')
+
+
+
+
+@app.route("/Жүжигчин", methods = ['GET', 'POST'])
+def actors(limit=9):
+    if request.method == 'GET':
+        page = int(request.args.get("page",1))
+        start = (page-1) * limit
+        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+        cur = con.session()
+        actors = cur.run("match (p:Person)-[:ACTED_IN]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image")
+        latest = list(actors)
+        too = len(latest)
+        paginate = Pagination(page=page, per_page=limit, total=too)
+        paged_actors = cur.run("match (p:Person)-[:ACTED_IN]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as actorID SKIP $skip LIMIT $limit", skip=start, limit=limit)
+        return render_template('user/actors.html', utga=paged_actors, too=too, paginate=paginate)
+    elif request.method == 'POST':
+        title = request.form['txtMovieTitle']
+        print(title)
+        min_released = request.form.get('minReleased')
+        max_released = request.form.get('maxReleased')
+        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+        cur = con.session()
+        search_movie = list(cur.run('''
+        MATCH (m:Movie)
+    WHERE toLower(m.title) CONTAINS toLower($title)
+    AND ($minReleased IS NULL AND $maxReleased IS NULL OR (m.released >= $minReleased AND m.released <= $maxReleased))
+    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
+''', title=title,minReleased=min_released, maxReleased=max_released))
+        too = len(search_movie)
+        return render_template('user/actors.html', utga=search_movie, too=too)
+@app.route('/Жүжигчин/<int:id>')
 def actor(id):
     conn = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
     cur = conn.session()
@@ -134,9 +152,10 @@ def actor(id):
         "actor": actor_detail[0],
         "movies": acted_movies
     }
-    return render_template("user/actor.html", context=context)
+    return render_template("user/actor.html", context=context)  
 
-@app.route('/directors', methods = ['GET', 'POST'])
+
+@app.route("/Найруулагч", methods = ['GET', 'POST'])
 def directors(limit=9):
     if request.method == 'GET':
         page = int(request.args.get("page",1))
@@ -159,30 +178,126 @@ def directors(limit=9):
         search_movie = list(cur.run('''
         MATCH (m:Movie)
     WHERE toLower(m.title) CONTAINS toLower($title)
-    AND ($minReleased IS NULL AND $maxReleased IS NULL OR (m.released >= $minReleased AND m.released <= $maxReleased))
-    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
+    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS directorID
 ''', title=title,minReleased=min_released, maxReleased=max_released))
         too = len(search_movie)
-        return render_template('user/actors.html', utga=search_movie, too=too)
-
-@app.route('/director/<int:id>')
+        return render_template('user/directors.html', utga=search_movie, too=too)
+@app.route('/Найруулагч/<int:id>')
 def director(id):
     conn = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
     cur = conn.session()
-    director_detail = list(cur.run("""
+    actor_detail = list(cur.run("""
         match(p:Person) where id(p) = $id
         return p.name as name, p.image as image, p.born as born
         """, id=id))
-    directed_movies = list(cur.run(""" match(m:Movie)<-[:DIRECTED]-(p:Person) 
+    acted_movies = list(cur.run(""" match(m:Movie)<-[:DIRECTED]-(p:Person) 
         where id(p) = $id return m.title as title, m.released as released, id(m) as movieID
     """, id=id))
 
     context = {
-        "director": director_detail[0],
-        "movies": directed_movies
+        "actor": actor_detail[0],
+        "movies": acted_movies
     }
-    return render_template("user/director.html", context=context)
+    return render_template("user/director.html", context=context)  
 
+
+
+
+
+@app.route("/Продюсер", methods = ['GET', 'POST'])
+def producers(limit=9):
+    if request.method == 'GET':
+        page = int(request.args.get("page",1))
+        start = (page-1) * limit
+        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+        cur = con.session()
+        actors = cur.run("match (p:Person)-[:PRODUCED]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image")
+        latest = list(actors)
+        too = len(latest)
+        paginate = Pagination(page=page, per_page=limit, total=too)
+        paged_actors = cur.run("match (p:Person)-[:PRODUCED]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as producerID SKIP $skip LIMIT $limit", skip=start, limit=limit)
+        return render_template('user/producers.html', utga=paged_actors, too=too, paginate=paginate)
+    elif request.method == 'POST':
+        title = request.form['txtMovieTitle']
+        print(title)
+        min_released = request.form.get('minReleased')
+        max_released = request.form.get('maxReleased')
+        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+        cur = con.session()
+        search_movie = list(cur.run('''
+        MATCH (m:Movie)
+    WHERE toLower(m.title) CONTAINS toLower($title)
+    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
+''', title=title,minReleased=min_released, maxReleased=max_released))
+        too = len(search_movie)
+        return render_template('user/producers.html', utga=search_movie, too=too)
+@app.route('/Продюсер/<int:id>')
+def producer(id):
+    conn = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+    cur = conn.session()
+    actor_detail = list(cur.run("""
+        match(p:Person) where id(p) = $id
+        return p.name as name, p.image as image, p.born as born
+        """, id=id))
+    acted_movies = list(cur.run(""" match(m:Movie)<-[:PRODUCED]-(p:Person) 
+        where id(p) = $id return m.title as title, m.released as released, id(m) as movieID
+    """, id=id))
+
+    context = {
+        "producer": actor_detail[0],
+        "movies": acted_movies
+    }
+    return render_template("user/producer.html", context=context)  
+
+
+
+
+
+
+@app.route("/Зохиолч", methods = ['GET', 'POST'])
+def wrotes(limit=9):
+    if request.method == 'GET':
+        page = int(request.args.get("page",1))
+        start = (page-1) * limit
+        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+        cur = con.session()
+        actors = cur.run("match (p:Person)-[:WROTE]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image")
+        latest = list(actors)
+        too = len(latest)
+        paginate = Pagination(page=page, per_page=limit, total=too)
+        paged_actors = cur.run("match (p:Person)-[:WROTE]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as wroteID SKIP $skip LIMIT $limit", skip=start, limit=limit)
+        return render_template('user/wrotes.html', utga=paged_actors, too=too, paginate=paginate)
+    elif request.method == 'POST':
+        title = request.form['txtMovieTitle']
+        print(title)
+        min_released = request.form.get('minReleased')
+        max_released = request.form.get('maxReleased')
+        con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+        cur = con.session()
+        search_movie = list(cur.run('''
+        MATCH (m:Movie)
+    WHERE toLower(m.title) CONTAINS toLower($title)
+    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
+''', title=title,minReleased=min_released, maxReleased=max_released))
+        too = len(search_movie)
+        return render_template('user/wrotes.html', utga=search_movie, too=too)
+@app.route('/Зохиолч/<int:id>')
+def wrote(id):
+    conn = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
+    cur = conn.session()
+    actor_detail = list(cur.run("""
+        match(p:Person) where id(p) = $id
+        return p.name as name, p.image as image, p.born as born
+        """, id=id))
+    acted_movies = list(cur.run(""" match(m:Movie)<-[:WROTE]-(p:Person) 
+        where id(p) = $id return m.title as title, m.released as released, id(m) as movieID
+    """, id=id))
+
+    context = {
+        "wrote": actor_detail[0],
+        "movies": acted_movies
+    }
+    return render_template("user/wrote.html", context=context)  
 ### user end ###
 
 ### admin start ###

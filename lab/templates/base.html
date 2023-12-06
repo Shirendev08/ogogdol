@@ -55,11 +55,14 @@ $(document).ready(function() {
 			  <div class="navbar-nav">
 				<a class="nav-item nav-link active" href="{{url_for('index')}}">Нүүр <span class="sr-only">(current)</span></a>
 				<a class="nav-item nav-link" href="{{url_for('movies')}}">Кино</a>
-				<a class="nav-item nav-link" href="{{url_for('actors')}}">Жүжигчид</a>
+				<!-- <a class="nav-item nav-link" href="{{url_for('actors')}}">Жүжигчид</a>
 				<a class="nav-item nav-link" href="{{url_for('directors')}}">Найруулагч</a>
 				<a class="nav-item nav-link" href="#">Зохиолч</a>
 				<a class="nav-item nav-link" href="#">Продюсер</a>
-				<a class="nav-item nav-link" href="#">Шүүмжлэгч</a>
+				<a class="nav-item nav-link" href="#">Шүүмжлэгч</a> -->
+				{% for i in neo4j_data %}
+				<a class="nav-item nav-link" href="{{i.turul}}">{{i.turul}}</a>
+				{% endfor %}
 			  </div>
 			</div>
 		  </nav>

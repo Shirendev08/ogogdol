@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block aguulga %}
+
+<!-- movie detail aguulga ehlel -->
+
+<!-- ============================ COMPONENT 1 ================================= -->
+<div class="card">
+	<div class="row no-gutters">
+		<aside class="col-md-6">
+<article class="gallery-wrap"> 
+	<div class="img-big-wrap">
+        <!-- kinonii zurag bairlana -->
+	   <a href="#"><img width="100%" src="{{context.producer.image}}"></a>
+	</div> <!-- img-big-wrap.// -->
+	
+</article> <!-- gallery-wrap .end// -->
+		</aside>
+		<main class="col-md-6 border-left">
+<article class="content-body">
+
+<h2 class="title">{{context.producer.name}}</h2>
+<div class="mb-3"> 
+	<var class="price h4"></var> 
+</div> 
+<p>{{context.producer.born}}</p>
+<hr>
+<!-- actors -->
+	<div class="row">
+        <div class="col-md-4">
+		    <h6>Тоглосон кинонууд:</h6>
+        </div>
+        <div class="col-md-8">
+            {% if context.movies %}
+            <ul>
+                {% for movie in context.movies %}
+                <a href="{{url_for('movie', id=movie.movieID)}}"><li>{{movie.title}} {{movie.released}}</li></a>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Киноны мэдээлэл олдсонгүй</p>
+            {% endif %}
+        </div>     
+	</div> <!-- row.// -->
+    <hr>
+
+<!-- movie detail aguulga togsgol -->
+
+{% endblock %}
