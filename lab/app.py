@@ -51,15 +51,30 @@ def movies(limit=9):
         return render_template('user/movies.html', utga=paged_movies, too=too, paginate=paginate)
     elif request.method == 'POST':
         mname = request.form['txtMovieTitle']
-        min_released = request.form.get('minReleased')
-        max_released = request.form.get('maxReleased')
+        min_released = request.form['minReleased']
+        max_released = request.form['maxReleased']
+
+# Declare min_released and max_released with initial values
+        min_released_value = None
+        max_released_value = None
+
+# Check if min_released and max_released are non-empty before converting to integers
+        if min_released:
+            min_released_value = int(min_released)
+
+        if max_released:
+            max_released_value = int(max_released)
+
         con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
         cur = con.session()
         search_movie = list(cur.run('''
-        MATCH (m:Movie)
-        WHERE toLower(m.title) CONTAINS toLower($title)
-        RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
-''', title=mname,minReleased=min_released, maxReleased=max_released))
+    MATCH (m:Movie)
+    WHERE toLower(m.title) CONTAINS toLower($title)
+    AND ($minReleased IS NULL OR m.released >= $minReleased)
+    AND ($maxReleased IS NULL OR m.released <= $maxReleased)
+    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
+''', title=mname, minReleased=min_released_value, maxReleased=max_released_value))
+
         too = len(search_movie)
         return render_template('user/movies.html', utga=search_movie, too=too)
 @app.route('/movie/<int:id>')
