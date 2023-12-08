@@ -137,18 +137,30 @@ def actors(limit=9):
         paged_actors = cur.run("match (p:Person)-[:ACTED_IN]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as actorID SKIP $skip LIMIT $limit", skip=start, limit=limit)
         return render_template('user/actors.html', utga=paged_actors, too=too, paginate=paginate)
     elif request.method == 'POST':
-        title = request.form['txtMovieTitle']
-        print(title)
-        min_released = request.form.get('minReleased')
-        max_released = request.form.get('maxReleased')
+        name = request.form['txtMovieTitle']
+        min_released = request.form['minReleased']
+        max_released = request.form['maxReleased']
+
+# Declare min_released and max_released with initial values
+        min_released_value = None
+        max_released_value = None
+
+# Check if min_released and max_released are non-empty before converting to integers
+        if min_released:
+            min_released_value = int(min_released)
+
+        if max_released:
+            max_released_value = int(max_released)
+
         con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
         cur = con.session()
         search_movie = list(cur.run('''
-        MATCH (m:Movie)
-    WHERE toLower(m.title) CONTAINS toLower($title)
-    AND ($minReleased IS NULL AND $maxReleased IS NULL OR (m.released >= $minReleased AND m.released <= $maxReleased))
-    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
-''', title=title,minReleased=min_released, maxReleased=max_released))
+    MATCH (m:Movie)<-[:ACTED_IN]-(p:Person)
+    WHERE toLower(p.name) CONTAINS toLower($name)
+    AND ($minReleased IS NULL OR p.born >= $minReleased)
+    AND ($maxReleased IS NULL OR p.born <= $maxReleased)
+    RETURN p.name AS name, p.born AS born, p.image AS image, id(m) AS actorID
+''', name=name, minReleased=min_released_value, maxReleased=max_released_value))
         too = len(search_movie)
         return render_template('user/actors.html', utga=search_movie, too=too)
 @app.route('/Жүжигчин/<int:id>')
@@ -184,17 +196,30 @@ def directors(limit=9):
         paged_actors = cur.run("match (p:Person)-[:DIRECTED]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as directorID SKIP $skip LIMIT $limit", skip=start, limit=limit)
         return render_template('user/directors.html', utga=paged_actors, too=too, paginate=paginate)
     elif request.method == 'POST':
-        title = request.form['txtMovieTitle']
-        print(title)
-        min_released = request.form.get('minReleased')
-        max_released = request.form.get('maxReleased')
+        name = request.form['txtMovieTitle']
+        min_released = request.form['minReleased']
+        max_released = request.form['maxReleased']
+
+# Declare min_released and max_released with initial values
+        min_released_value = None
+        max_released_value = None
+
+# Check if min_released and max_released are non-empty before converting to integers
+        if min_released:
+            min_released_value = int(min_released)
+
+        if max_released:
+            max_released_value = int(max_released)
+
         con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
         cur = con.session()
         search_movie = list(cur.run('''
-        MATCH (m:Movie)
-    WHERE toLower(m.title) CONTAINS toLower($title)
-    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS directorID
-''', title=title,minReleased=min_released, maxReleased=max_released))
+    MATCH (m:Movie)<-[:DIRECTED]-(p:Person)
+    WHERE toLower(p.name) CONTAINS toLower($name)
+    AND ($minReleased IS NULL OR p.born >= $minReleased)
+    AND ($maxReleased IS NULL OR p.born <= $maxReleased)
+    RETURN p.name AS name, p.born AS born, p.image AS image, id(m) AS directorID
+''', name=name, minReleased=min_released_value, maxReleased=max_released_value))
         too = len(search_movie)
         return render_template('user/directors.html', utga=search_movie, too=too)
 @app.route('/Найруулагч/<int:id>')
@@ -233,17 +258,30 @@ def producers(limit=9):
         paged_actors = cur.run("match (p:Person)-[:PRODUCED]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as producerID SKIP $skip LIMIT $limit", skip=start, limit=limit)
         return render_template('user/producers.html', utga=paged_actors, too=too, paginate=paginate)
     elif request.method == 'POST':
-        title = request.form['txtMovieTitle']
-        print(title)
-        min_released = request.form.get('minReleased')
-        max_released = request.form.get('maxReleased')
+        name = request.form['txtMovieTitle']
+        min_released = request.form['minReleased']
+        max_released = request.form['maxReleased']
+
+# Declare min_released and max_released with initial values
+        min_released_value = None
+        max_released_value = None
+
+# Check if min_released and max_released are non-empty before converting to integers
+        if min_released:
+            min_released_value = int(min_released)
+
+        if max_released:
+            max_released_value = int(max_released)
+
         con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
         cur = con.session()
         search_movie = list(cur.run('''
-        MATCH (m:Movie)
-    WHERE toLower(m.title) CONTAINS toLower($title)
-    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
-''', title=title,minReleased=min_released, maxReleased=max_released))
+    MATCH (m:Movie)<-[:PRODUCED]-(p:Person)
+    WHERE toLower(p.name) CONTAINS toLower($name)
+    AND ($minReleased IS NULL OR p.born >= $minReleased)
+    AND ($maxReleased IS NULL OR p.born <= $maxReleased)
+    RETURN p.name AS name, p.born AS born, p.image AS image, id(m) AS producerID
+''', name=name, minReleased=min_released_value, maxReleased=max_released_value))
         too = len(search_movie)
         return render_template('user/producers.html', utga=search_movie, too=too)
 @app.route('/Продюсер/<int:id>')
@@ -283,17 +321,30 @@ def wrotes(limit=9):
         paged_actors = cur.run("match (p:Person)-[:WROTE]->(m:Movie) return distinct p.name as name, p.born as born, p.image as image, id(p) as wroteID SKIP $skip LIMIT $limit", skip=start, limit=limit)
         return render_template('user/wrotes.html', utga=paged_actors, too=too, paginate=paginate)
     elif request.method == 'POST':
-        title = request.form['txtMovieTitle']
-        print(title)
-        min_released = request.form.get('minReleased')
-        max_released = request.form.get('maxReleased')
+        name = request.form['txtMovieTitle']
+        min_released = request.form['minReleased']
+        max_released = request.form['maxReleased']
+
+# Declare min_released and max_released with initial values
+        min_released_value = None
+        max_released_value = None
+
+# Check if min_released and max_released are non-empty before converting to integers
+        if min_released:
+            min_released_value = int(min_released)
+
+        if max_released:
+            max_released_value = int(max_released)
+
         con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
         cur = con.session()
         search_movie = list(cur.run('''
-        MATCH (m:Movie)
-    WHERE toLower(m.title) CONTAINS toLower($title)
-    RETURN m.title AS title, m.released AS released, m.image AS image, id(m) AS movieID
-''', title=title,minReleased=min_released, maxReleased=max_released))
+    MATCH (m:Movie)<-[:WROTE]-(p:Person)
+    WHERE toLower(p.name) CONTAINS toLower($name)
+    AND ($minReleased IS NULL OR p.born >= $minReleased)
+    AND ($maxReleased IS NULL OR p.born <= $maxReleased)
+    RETURN p.name AS name, p.born AS born, p.image AS image, id(m) AS wroteID
+''', name=name, minReleased=min_released_value, maxReleased=max_released_value))
         too = len(search_movie)
         return render_template('user/wrotes.html', utga=search_movie, too=too)
 @app.route('/Зохиолч/<int:id>')

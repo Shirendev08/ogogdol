@@ -7,3 +7,5 @@ MATCH (m:Person)
 SET m.image = '/static/media/'+m.name+'.jpg'
 
 
+project-oo
+ajillahgui bvl refresh hiiher zarimda ajillaj bnle shu!!!!!!!
