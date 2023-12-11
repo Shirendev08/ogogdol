@@ -24,7 +24,8 @@ RETURN distinct
     WHEN type(r) = "FOLLOWS" THEN "Дагагч"
     WHEN type(r) = "PRODUCED" THEN "Продюсер"
     WHEN type(r) = "WROTE" THEN "Зохиолч"
-    ELSE "Тоймч"
+    WHEN type(r) = "MUSIC_PRODUCED" THEN "hogjmiin zohiolch"
+    ELSE ""
   END AS turul
 ''')
     return {'neo4j_data': latest} 
@@ -91,16 +92,19 @@ def movie(id):
         match(m:Movie)<-[:DIRECTED]-(d:Person)
         where id(m) = $id
         return id(d) as directorID, d.name as name
+                             
         """, id=id))
     writers = list(cur.run("""
         match(m:Movie)<-[:WROTE]-(d:Person)
         where id(m) = $id
-        return d.name as name
+        return id(d) as wroteID, d.name as name
+        
         """,id=id))
     producers = list(cur.run("""
         match(m:Movie)<-[:PRODUCED]-(p:Person)
         where id(m) = $id
-        return p.name as name
+                return id(p) as producerID, p.name as name
+
         """,id=id))
 
     comments = list(cur.run("""
@@ -298,7 +302,7 @@ def producer(id):
 
     context = {
         "producer": actor_detail[0],
-        "movies": acted_movies
+        "movies": acted_movies      
     }
     return render_template("user/producer.html", context=context)  
 

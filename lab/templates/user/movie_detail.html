@@ -53,7 +53,7 @@
         {% if data.directors %}
         <ul>
             {% for director in data.directors %}
-            <a href="{{url_for('actor', id=director.directorID)}}"><li>{{director.name}}</li></a>
+            <a href="{{url_for('director', id=director.directorID)}}"><li>{{director.name}}</li></a>
             {% endfor %}
         </ul>
         {% else %}
@@ -71,7 +71,7 @@
         {% if data.writers %}
         <ul>
             {% for writer in data.writers %}
-            <a href="#"><li>{{ writer.name }}</li></a>
+            <a href="{{url_for('wrote', id=writer.wroteID)}}"><li>{{ writer.name }}</li></a>
             {% endfor %}
         </ul>
         {% else %}
@@ -89,7 +89,7 @@
         {% if data.producers %}
         <ul>
             {% for producer in data.producers %}
-            <a href="#"><li>{{producer.name}}</li></a>
+            <a href="{{url_for('producer', id=producer.producerID)}}"><li>{{producer.name}}</li></a>
             {% endfor %}
         </ul>
         {% else %}
