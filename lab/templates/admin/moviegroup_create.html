@@ -19,34 +19,79 @@
                 titleInput.disabled = true;
             }
         }
+        function filterMovies() {
+  // Get the input value
+  const input = document.getElementById('movieInput').value.toLowerCase();
+
+  // Get all options in the datalist element
+  const options = document.querySelectorAll('#movies option');
+
+  // Loop through each option
+  options.forEach(option => {
+    const countryName = option.value.toLowerCase();
+
+    // Check if the input is a substring of the country name
+    if (countryName.includes(input)) {
+      option.style.display = ''; // Show the option
+    } else {
+      option.style.display = 'none'; // Hide the option
+    }
+  });
+}
+        function filterPersons() {
+  // Get the input value
+  const input = document.getElementById('personInput').value.toLowerCase();
+
+  // Get all options in the datalist element
+  const options = document.querySelectorAll('#person option');
+
+  // Loop through each option
+  options.forEach(option => {
+    const countryName = option.value.toLowerCase();
+
+    // Check if the input is a substring of the country name
+    if (countryName.includes(input)) {
+      option.style.display = ''; // Show the option
+    } else {
+      option.style.display = 'none'; // Hide the option
+    }
+  });
+}
+
         </script>
 </head>
 <body>
     <p>{{resp}}</p>
     {% if data %}
     <form method="POST" enctype="multipart/form-data">
-        <!-- title, tagline, released, image -->
-        
-        <label for="cars">Choose movie:</label><br><br>
-        
+       
 
-        <select name="title" id="title">
+
+        <label for="movieInput">Movie:</label>
+        <input type="text" list="movies" id="movieInput" name="title" oninput="filterMovies()">
+        <datalist id="movies">
             {% for u in data.movies %}
-          <option value="{{u.title}}">{{u.title}}</option>
-          {% endfor %}
-        </select><br><br>
-        <label for="cars">Choose Person:</label><br><br>
-
-        <select name="name" id="name">
+            <option value="{{u.title}}">{{u.title}}</option>
+            {% endfor %}
+        </datalist>
+        <br><br>
+        <label for="personInput">Person:</label>
+        <input type="text" list="persons" id="personInput" name="name" oninput="filterCountries()">
+        <datalist id="persons">
             {% for u in data.persons %}
-          <option value="{{u.name}}">{{u.name}}</option>
-          {% endfor %}
-        </select><br><br>
+            <option value="{{u.name}}">{{u.name}}</option>
+            {% endfor %}
+        </datalist>
+        <br><br>
+
+
+
+        
         <label for="cars">Choose Relationship:</label><br><br>
 
         <select name="relationship" id="relationship" onchange="showSecondSelect()">
             {% for r in data.rel %}
-          <option value="{{r.relationship}}">{{r.relationship}}</option>
+          <option value="{{r.turul}}">{{r.turul}}</option>
           {% endfor %}
         </select><br><br>
         <input type="text" placeholder="roles" name="roles" id="roles"><br><br>

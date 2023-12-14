@@ -438,8 +438,18 @@ def moviegroup_create():
                         return m.name as name
                         """))
         rel = list(cur.run("""
-                        match (m:Movie)<-[r]-(p:Person)
-                        return distinct type(r) as relationship
+           MATCH (p:Person)-[r]->(m:Movie)
+WITH DISTINCT
+  CASE
+    WHEN type(r) = "ACTED_IN" THEN "Жүжигчин"
+    WHEN type(r) = "DIRECTED" THEN "Найруулагч"
+    WHEN type(r) = "FOLLOWS" THEN "Дагагч"
+    WHEN type(r) = "PRODUCED" THEN "Продюсер"
+    WHEN type(r) = "WROTE" THEN "Зохиолч"
+  END AS turul
+WHERE turul IS NOT NULL
+RETURN turul;
+
                         """))
         context = {
         "rel" : rel,
@@ -451,6 +461,17 @@ def moviegroup_create():
     else:
         name = request.form["name"]
         relationship = request.form["relationship"]
+        if relationship:
+            if relationship == "Жүжигчин":
+                relationship == "ACTED_IN"
+            elif relationship == "Найруулагч":
+                relationship == "DIRECTED"
+            elif relationship == "Продюсер":
+                relationship == "PRODUCED"
+            elif relationship == "Зохиолч":
+                relationship == "WROTE"
+            else:
+                relationship == "FOLLOWS"    
         title = request.form['title']
         roles = request.form.get('roles')
         conn = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
