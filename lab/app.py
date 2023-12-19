@@ -15,7 +15,7 @@ def inject_data():
     con = GraphDatabase.driver(uri="bolt://localhost:7687", auth=("neo4j", "12345678"))
     cur = con.session()
     latest = cur.run('''
-                MATCH (p:Person)-[r]->(m:Movie)
+                MATCH ()-[r]-()
 
 RETURN distinct
   CASE
@@ -24,7 +24,7 @@ RETURN distinct
     WHEN type(r) = "FOLLOWS" THEN "Дагагч"
     WHEN type(r) = "PRODUCED" THEN "Продюсер"
     WHEN type(r) = "WROTE" THEN "Зохиолч"
-    WHEN type(r) = "MUSIC_PRODUCED" THEN "hogjmiin zohiolch"
+    WHEN type(r) = "HUGJIMIIN_ZOHIOLCH" THEN "hogjmiin zohiolch"
     ELSE ""
   END AS turul
 ''')
@@ -438,7 +438,7 @@ def moviegroup_create():
                         return m.name as name
                         """))
         rel = list(cur.run("""
-           MATCH (p:Person)-[r]->(m:Movie)
+           MATCH ()-[r]->()
 WITH DISTINCT
   CASE
     WHEN type(r) = "ACTED_IN" THEN "Жүжигчин"
