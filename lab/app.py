@@ -24,7 +24,6 @@ RETURN distinct
     WHEN type(r) = "FOLLOWS" THEN "Дагагч"
     WHEN type(r) = "PRODUCED" THEN "Продюсер"
     WHEN type(r) = "WROTE" THEN "Зохиолч"
-    WHEN type(r) = "HUGJIMIIN_ZOHIOLCH" THEN "hogjmiin zohiolch"
     ELSE ""
   END AS turul
 ''')
